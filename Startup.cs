@@ -13,7 +13,7 @@ using Microsoft.Bot.Builder.BotFramework;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Bot.Builder.AI.QnA;
-
+using Microsoft.Bot.Builder.Azure;
 using MyEchoBot.Services;
 using MyGreetingBot.Bots;
 
@@ -51,7 +51,10 @@ namespace MyEchoBot
 
         public void ConfigureState(IServiceCollection services)
         {
-            services.AddSingleton<IStorage, MemoryStorage>();
+            // services.AddSingleton<IStorage, MemoryStorage>();
+            var storageAccount = System.Environment.GetEnvironmentVariable("STORAGE_STRING");
+            var storageContainer = System.Environment.GetEnvironmentVariable("STORAGE_NAME");
+            services.AddSingleton<IStorage>(new AzureBlobStorage(storageAccount, storageContainer));
             services.AddSingleton<UserState>();
             services.AddSingleton<ConversationState>();
             services.AddSingleton<BotStateService>();
