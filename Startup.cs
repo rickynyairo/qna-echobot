@@ -15,7 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Bot.Builder.AI.QnA;
 using Microsoft.Bot.Builder.Azure;
 using MyEchoBot.Services;
-using MyGreetingBot.Bots;
+using MyEchoBot.Bots;
 
 namespace MyEchoBot
 {

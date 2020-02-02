@@ -6,7 +6,7 @@ using Microsoft.Bot.Schema;
 using MyEchoBot.Services;
 using MyEchoBot.Models;
 
-namespace MyGreetingBot.Bots
+namespace MyEchoBot.Bots
 {
     public class GreetingBot : ActivityHandler
     {
