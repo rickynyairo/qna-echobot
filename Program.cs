@@ -16,9 +16,10 @@ namespace MyEchoBot
             CreateWebHostBuilder(args).Build().Run();
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .ConfigureLogging((logging) => {
+                .ConfigureLogging((logging) =>
+                {
                     logging.AddDebug();
                     logging.AddConsole();
                 })

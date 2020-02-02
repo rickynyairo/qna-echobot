@@ -23,7 +23,7 @@ namespace MyEchoBot.Bots
         {
             _botStateService = botStateService ?? throw new System.ArgumentNullException(nameof(botStateService));
             _dialog = dialog ?? throw new System.ArgumentNullException(nameof(dialog));
-            _logger = _logger ?? throw new System.ArgumentNullException(nameof(logger));
+            _logger = logger ?? throw new System.ArgumentNullException(nameof(logger));
         }
 
         public override async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default(CancellationToken)){

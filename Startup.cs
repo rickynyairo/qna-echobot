@@ -10,12 +10,14 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Builder.BotFramework;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Bot.Builder.AI.QnA;
 using Microsoft.Bot.Builder.Azure;
 using MyEchoBot.Services;
 using MyEchoBot.Bots;
+using MyEchoBot.Dialogs;
 
 namespace MyEchoBot
 {
@@ -36,8 +38,11 @@ namespace MyEchoBot
             // Create the Bot Framework Adapter with error handling enabled.
             services.AddSingleton<IBotFrameworkHttpAdapter, AdapterWithErrorHandler>();
 
+            ConfigureState(services);
+
+            ConfigureDialogs(services);
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
-            services.AddTransient<IBot, GreetingBot>();
+            services.AddTransient<IBot, DialogBot<MainDialog>>();
 
             // Create QnAMaker endpoint as a singleton
             services.AddSingleton(new QnAMakerEndpoint
@@ -46,9 +51,12 @@ namespace MyEchoBot
                 EndpointKey = Configuration.GetValue<string>($"QnAAuthKey"),
                 Host = Configuration.GetValue<string>($"QnAEndpointHostName")
             });
-            ConfigureState(services);
         }
 
+        public void ConfigureDialogs(IServiceCollection services)
+        {
+            services.AddSingleton<MainDialog>();
+        }
         public void ConfigureState(IServiceCollection services)
         {
             // services.AddSingleton<IStorage, MemoryStorage>();
