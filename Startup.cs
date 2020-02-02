@@ -14,7 +14,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Bot.Builder.AI.QnA;
 
-using MyEchoBot.Bots;
+using MyEchoBot.Services;
+using MyGreetingBot.Bots;
 
 namespace MyEchoBot
 {
@@ -36,7 +37,7 @@ namespace MyEchoBot
             services.AddSingleton<IBotFrameworkHttpAdapter, AdapterWithErrorHandler>();
 
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
-            services.AddTransient<IBot, EchoBot>();
+            services.AddTransient<IBot, GreetingBot>();
 
             // Create QnAMaker endpoint as a singleton
             services.AddSingleton(new QnAMakerEndpoint
@@ -45,6 +46,15 @@ namespace MyEchoBot
                 EndpointKey = Configuration.GetValue<string>($"QnAAuthKey"),
                 Host = Configuration.GetValue<string>($"QnAEndpointHostName")
             });
+            ConfigureState(services);
+        }
+
+        public void ConfigureState(IServiceCollection services)
+        {
+            services.AddSingleton<IStorage, MemoryStorage>();
+            services.AddSingleton<UserState>();
+            services.AddSingleton<ConversationState>();
+            services.AddSingleton<BotStateService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
