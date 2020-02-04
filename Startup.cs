@@ -18,6 +18,7 @@ using Microsoft.Bot.Builder.Azure;
 using MyEchoBot.Services;
 using MyEchoBot.Bots;
 using MyEchoBot.Dialogs;
+// using MyEchoBot.Config;
 
 namespace MyEchoBot
 {
