@@ -67,6 +67,7 @@ namespace MyEchoBot
             services.AddSingleton<UserState>();
             services.AddSingleton<ConversationState>();
             services.AddSingleton<BotStateService>();
+            services.AddSingleton<BotServices>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

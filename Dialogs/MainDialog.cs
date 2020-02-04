@@ -19,11 +19,13 @@ namespace MyEchoBot.Dialogs
     {
         #region Variables
         private readonly BotStateService _botStateService;
+        private readonly BotServices _botServices;
 
         #endregion
-        public MainDialog(BotStateService botStateService) : base(nameof(MainDialog))
+        public MainDialog(BotStateService botStateService, BotServices botServices) : base(nameof(MainDialog))
         {
             _botStateService = botStateService ?? throw new ArgumentNullException(nameof(botStateService));
+            _botServices = botServices ?? throw new ArgumentNullException(nameof(botServices));
             InitializeWaterfallDialog();
         }
         private void InitializeWaterfallDialog()
@@ -44,14 +46,25 @@ namespace MyEchoBot.Dialogs
         }
         private async Task<DialogTurnResult> InitialStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            if (Regex.Match(stepContext.Context.Activity.Text.ToLower(), "hi").Success)
+            // use the dispatch model to determine which cognitive service to use
+            var recogniserResult = await _botServices.Dispatch.RecognizeAsync(stepContext.Context, cancellationToken);
+
+            // top intent tells us which cognitive service to use
+            var topIntent = recogniserResult.GetTopScoringIntent();
+            switch(topIntent.intent)
             {
-                return await stepContext.BeginDialogAsync($"{nameof(MainDialog)}.greeting", null, cancellationToken);
+                case "GreetingIntent":
+                    return await stepContext.BeginDialogAsync($"{nameof(MainDialog)}.greeting", null, cancellationToken);
+                case "NewBugReportIntent":
+                    return await stepContext.BeginDialogAsync($"{nameof(MainDialog)}.bugReport", null, cancellationToken);
+                case "QueryBugTypeIntent":
+                    return await stepContext.BeginDialogAsync($"{nameof(MainDialog)}.bugType", null, cancellationToken);
+                default:
+                    await stepContext.Context.SendActivityAsync(MessageFactory.Text("Sorry, I dont understand what you mean"));
+                    break;
             }
-            else
-            {
-                return await stepContext.BeginDialogAsync($"{nameof(MainDialog)}.bugReport", null, cancellationToken);
-            }
+
+            return await stepContext.NextAsync(null, cancellationToken);
 
         }
         private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
